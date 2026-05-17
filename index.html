@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ELINTIR - RF Context Intelligence</title>
+    <meta
+      name="description"
+      content="ELINTIR is a passive RF context intelligence system for distributed sensors, emitter localization, and field-ready spectrum workflows."
+    >
+    <meta name="theme-color" content="#10151a">
+    <meta property="og:title" content="ELINTIR">
+    <meta property="og:description" content="Autonomous radio context intelligence for distributed RF sensing.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="/assets/elintir-hero.png">
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #f2f4ec;
+        --muted: #b8c0b6;
+        --panel: rgba(16, 21, 26, 0.78);
+        --panel-strong: rgba(16, 21, 26, 0.92);
+        --line: rgba(242, 244, 236, 0.18);
+        --teal: #25d9c6;
+        --amber: #e4a647;
+        --red: #df5a57;
+        --green: #8ecf79;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background: #10151a;
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 18px 34px;
+        background: linear-gradient(180deg, rgba(16, 21, 26, 0.9), rgba(16, 21, 26, 0));
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        font-size: 17px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--teal);
+        border-radius: 50%;
+        box-shadow: 0 0 24px rgba(37, 217, 198, 0.45);
+      }
+
+      nav {
+        display: flex;
+        gap: 22px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      nav a {
+        text-decoration: none;
+      }
+
+      nav a:hover {
+        color: var(--ink);
+      }
+
+      .hero {
+        position: relative;
+        min-height: 88svh;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        align-items: end;
+        gap: 42px;
+        padding: 120px 34px 64px;
+        overflow: hidden;
+      }
+
+      .hero::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background:
+          linear-gradient(90deg, rgba(16, 21, 26, 0.76), rgba(16, 21, 26, 0.28) 58%, rgba(16, 21, 26, 0.72)),
+          linear-gradient(180deg, rgba(16, 21, 26, 0.08), #10151a 96%),
+          url("assets/elintir-hero.png") center / cover no-repeat;
+      }
+
+      .hero-content,
+      .telemetry {
+        position: relative;
+      }
+
+      .eyebrow {
+        margin: 0 0 18px;
+        color: var(--teal);
+        font-size: 14px;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: 82px;
+        line-height: 0.96;
+      }
+
+      .lead {
+        max-width: 660px;
+        margin: 22px 0 0;
+        color: var(--muted);
+        font-size: 21px;
+        line-height: 1.55;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 46px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 800;
+      }
+
+      .button.primary {
+        border-color: rgba(37, 217, 198, 0.55);
+        background: rgba(37, 217, 198, 0.16);
+        color: #eafffb;
+      }
+
+      .button.secondary {
+        background: rgba(242, 244, 236, 0.08);
+      }
+
+      .telemetry {
+        width: 100%;
+        align-self: center;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+        backdrop-filter: blur(18px);
+      }
+
+      .telemetry-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--green);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .pulse {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 18px rgba(142, 207, 121, 0.85);
+      }
+
+      .metric-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .metric {
+        min-height: 96px;
+        padding: 13px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(242, 244, 236, 0.06);
+      }
+
+      .metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 12px;
+        font-size: 24px;
+      }
+
+      .metric.teal strong {
+        color: var(--teal);
+      }
+
+      .metric.amber strong {
+        color: var(--amber);
+      }
+
+      .metric.red strong {
+        color: var(--red);
+      }
+
+      .band {
+        padding: 76px 34px;
+        background: #f2f4ec;
+        color: #151917;
+      }
+
+      .inner {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-label {
+        margin: 0 0 14px;
+        color: #3c706c;
+        font-size: 13px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 0;
+        max-width: 760px;
+        font-size: 42px;
+        line-height: 1.1;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 34px;
+      }
+
+      .card {
+        min-height: 210px;
+        padding: 22px;
+        border: 1px solid rgba(21, 25, 23, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .card b {
+        display: block;
+        margin-bottom: 13px;
+        font-size: 17px;
+      }
+
+      .card p {
+        margin: 0;
+        color: #59615a;
+        line-height: 1.65;
+      }
+
+      .dark-band {
+        padding: 70px 34px 82px;
+        background: #151917;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .terminal {
+        min-height: 260px;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel-strong);
+        color: #d7e3dc;
+        font: 14px/1.7 "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+        overflow: hidden;
+      }
+
+      .terminal .ok {
+        color: var(--green);
+      }
+
+      .terminal .warn {
+        color: var(--amber);
+      }
+
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 26px 34px;
+        border-top: 1px solid rgba(242, 244, 236, 0.12);
+        color: var(--muted);
+        background: #10151a;
+        font-size: 14px;
+      }
+
+      .footer a {
+        text-decoration: none;
+        color: var(--ink);
+      }
+
+      @media (max-width: 920px) {
+        .hero {
+          grid-template-columns: 1fr;
+          align-items: end;
+          gap: 28px;
+        }
+
+        .telemetry {
+          max-width: 560px;
+        }
+
+        .cards,
+        .split {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          position: absolute;
+          padding: 18px;
+        }
+
+        nav {
+          display: none;
+        }
+
+        .hero,
+        .band,
+        .dark-band,
+        .footer {
+          padding-right: 18px;
+          padding-left: 18px;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 96px;
+        }
+
+        h1 {
+          font-size: 54px;
+        }
+
+        h2 {
+          font-size: 32px;
+        }
+
+        .lead {
+          font-size: 18px;
+        }
+
+        .metric-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .footer {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="ELINTIR landing">
+        <span class="brand-mark" aria-hidden="true"></span>
+        ELINTIR
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#system">System</a>
+        <a href="#deployment">Deployment</a>
+        <a href="https://github.com/romeo111/elintir_mapper">GitHub</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Passive RF mapping + context fusion</p>
+          <h1>ELINTIR</h1>
+          <p class="lead">
+            Autonomous radio context intelligence for distributed sensors,
+            emitter localization, and field-ready spectrum workflows.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="https://github.com/romeo111/elintir_mapper">GitHub Repository</a>
+            <a class="button secondary" href="#system">View System</a>
+          </div>
+        </div>
+
+        <aside class="telemetry" aria-label="System status summary">
+          <div class="telemetry-head">
+            <strong>Context Loop</strong>
+            <span class="status"><span class="pulse" aria-hidden="true"></span>READY</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric teal">
+              <span>Observers</span>
+              <strong>4</strong>
+            </div>
+            <div class="metric amber">
+              <span>Atlas bands</span>
+              <strong>47</strong>
+            </div>
+            <div class="metric red">
+              <span>Fusion</span>
+              <strong>DoA</strong>
+            </div>
+            <div class="metric teal">
+              <span>Mode</span>
+              <strong>Passive</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="band" id="system">
+        <div class="inner">
+          <p class="section-label">System</p>
+          <h2>From spectrum observation to operational context.</h2>
+          <div class="cards">
+            <article class="card">
+              <b>Sense</b>
+              <p>
+                Collect wideband RF observations and coherent direction finding
+                inputs from desktop, vehicle, or field node deployments.
+              </p>
+            </article>
+            <article class="card">
+              <b>Fuse</b>
+              <p>
+                Combine bearings, signatures, terrain assumptions, and sensor
+                state into one explainable emitter picture.
+              </p>
+            </article>
+            <article class="card">
+              <b>Learn</b>
+              <p>
+                Feed confirmed detections back into local atlases, presets, and
+                scanner workflows so the next cycle starts with better context.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="dark-band" id="deployment">
+        <div class="inner split">
+          <div>
+            <p class="section-label">Deployment</p>
+            <h2>Built for GitHub-first operations and field reproducibility.</h2>
+            <p class="lead">
+              The public repository carries installer scripts, operator docs,
+              cloud MVP services, and the RF mapping application in one place.
+            </p>
+            <div class="actions">
+              <a class="button primary" href="https://github.com/romeo111/elintir_mapper">Open Source</a>
+              <a class="button secondary" href="https://github.com/romeo111/elintir_mapper/tree/main/docs/operator">Operator Docs</a>
+            </div>
+          </div>
+          <div class="terminal" aria-label="Deployment checks">
+            <span class="ok">pages</span> :: elintir.com configured<br>
+            <span class="ok">repo</span>  :: romeo111/elintir_mapper<br>
+            <span class="warn">cloud</span> :: protected service path /cloud<br>
+            <span class="ok">mode</span>  :: static landing ready<br>
+            <br>
+            deploy target: GitHub Pages<br>
+            artifact: index.html, assets, CNAME
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>ELINTIR - RF context intelligence</span>
+      <a href="https://github.com/romeo111/elintir_mapper">github.com/romeo111/elintir_mapper</a>
+    </footer>
+  </body>
+</html>
